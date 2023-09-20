@@ -1,11 +1,9 @@
 using StaticArrays
 using CairoMakie
-using Statistics: std
 
 include("../src/neurodynamics_integration.jl")
 include("../src/misc_tools.jl")
-using .neurodynamics_integration
-using .misc_tools
+include("../src/time_series_tools.jl")
 
 
 ########################################################################

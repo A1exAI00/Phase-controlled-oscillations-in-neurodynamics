@@ -3,8 +3,7 @@ using CairoMakie
 
 include("../src/neurodynamics_integration.jl")
 include("../src/misc_tools.jl")
-using .neurodynamics_integration
-using .misc_tools
+include("../src/time_series_tools.jl")
 
 
 ########################################################################
@@ -35,9 +34,7 @@ U₀ = SA[u₀, v₀]
 t₀, t₁ = 0, 1200
 t_SPAN = [t₀, t₁]
 
-# numper of test oscillations
-N_oscillations = 100
-Δt = estimated_T/N_oscillations
+
 
 
 ########################################################################
@@ -56,6 +53,10 @@ println("T=$(T)")
 ########################################################################
 ########################################################################
 # Spike parameters for test oscillations
+
+# numper of test oscillations
+N_oscillations = 100
+Δt = T/N_oscillations
 
 spike_duration_period = 0.4
 periods_before_spike = 5
