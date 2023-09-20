@@ -8,7 +8,7 @@ using OrdinaryDiffEq, StaticArrays
 const RELTOL::Float64, ABSTOL::Float64 = 1e-5, 1e-5
 const MAXITERS::Int64 = Int(1e7)
 const ALG = Rodas5P
-const X_BOUNDS, Y_BOUNDS, Z_BOUNDS = (-3.0,3.0), (-3.0,3.0), (0.0,1e10)
+#const X_BOUNDS, Y_BOUNDS, Z_BOUNDS = (-3.0,3.0), (-3.0,3.0), (0.0,1e10)
 
 
 ########################################################################

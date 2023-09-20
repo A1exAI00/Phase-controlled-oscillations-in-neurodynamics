@@ -4,8 +4,7 @@ using Statistics: std
 
 include("../src/neurodynamics_integration.jl")
 include("../src/misc_tools.jl")
-using .neurodynamics_integration
-using .misc_tools
+include("../src/time_series_tools.jl")
 
 
 ########################################################################
@@ -91,6 +90,8 @@ for (i, Aₛₚ) in enumerate(Aₛₚ_span)
         
         t_maxes = calc_maxes(u_sol, t_sol)
         t_first_max = first_greater_then(t_maxes, (tₛₚ+τₛₚ))
+
+        # TODO: use the time_series_tools.jl function for φ
 
         #φ = mod(2*π*(t_first_max-reference_t_first_max)/T, 2*π)
         φ = (t_first_max-reference_t_first_max)/T
