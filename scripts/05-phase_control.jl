@@ -1,3 +1,9 @@
+#=
+TODO
+=#
+
+#########################################################################################
+
 using StaticArrays
 using CairoMakie
 
@@ -5,40 +11,39 @@ include("../src/neurodynamics_integration.jl")
 include("../src/misc_tools.jl")
 include("../src/time_series_tools.jl")
 
-
-########################################################################
-########################################################################
-# General program settings
+#########################################################################################
 
 DEFAULT_PLOT_RES = (1000, 800)
-DEFAULT_SAVING_PATH = "../generated"
-PLOT_FILENAME = "phase_control"
+DEFAULT_SAVING_PATH = "generated"
+PLOT_FILENAME = "05_phase_control"
 DEFAULT_PX_PER_UNIT_PNG = 2
 
+#########################################################################################
 
-########################################################################
-########################################################################
-# System and spike parameters for reference oscillation
-
+# Параметры опорной системы
 a, ϵ, I = 0.01, 0.02, 0.01
-reference_param = SA[a, ϵ, I, 0, 0, 0]
 
-
-########################################################################
-########################################################################
-# Initial values and time span for simulation
-
+# Начальные условия опорного сигнала
 u₀, v₀ = 0.14996701966490192, 0.021055242172979355
-U₀ = SA[u₀, v₀]
 
+# Время интегрирования
 t₀, t₁ = 0, 2000
+
+# Параметры спайка
+spike_duration_period = 0.4
+periods_before_spike = 5
+Aₛₚ_start, Aₛₚ_end, Aₛₚ_N = -3, 3, 2000
+
+#########################################################################################
+
+reference_param = SA[a, ϵ, I, 0, 0, 0]
+U₀ = SA[u₀, v₀]
 t_SPAN = [t₀, t₁]
+Aₛₚ_span = range(Aₛₚ_start, Aₛₚ_end, Aₛₚ_N)
 
+#########################################################################################
 
-########################################################################
-########################################################################
-# reference oscillation integration
-
+# Интегрирование опорной системы
 reference_sol = neurodynamics_integrate(reference_param, U₀, t_SPAN)
 reference_u_sol = reference_sol[1,:]
 reference_v_sol = reference_sol[2,:]
@@ -47,26 +52,15 @@ reference_t_sol = reference_sol.t
 T = mesure_T(reference_u_sol, reference_t_sol)
 println("T=$(T)")
 
-
-########################################################################
-########################################################################
+#########################################################################################
 # Spike parameters for test oscillations
 
-spike_duration_period = 0.4
-periods_before_spike = 5
-
 tₛₚ, τₛₚ = periods_before_spike*T, spike_duration_period*T
-Aₛₚ_start, Aₛₚ_end, Aₛₚ_N = -3, 3, 2000
-Aₛₚ_span = range(Aₛₚ_start, Aₛₚ_end, Aₛₚ_N)
 
-reference_t_maxes = calc_maxes(reference_u_sol, reference_t_sol)
+reference_t_maxes = times_of_max(reference_u_sol, reference_t_sol)
 reference_t_first_max = first_greater_then(reference_t_maxes, tₛₚ)
 
-
-
-########################################################################
-########################################################################
-
+#########################################################################################
 
 φ_array = zeros(Aₛₚ_N)
 for (i, Aₛₚ) in enumerate(Aₛₚ_span)
@@ -79,7 +73,7 @@ for (i, Aₛₚ) in enumerate(Aₛₚ_span)
     u_sol = sol[1,:]
     t_sol = sol.t
     
-    t_maxes = calc_maxes(u_sol, t_sol)
+    t_maxes = times_of_max(u_sol, t_sol)
     t_first_max = first_greater_then(t_maxes, (tₛₚ+τₛₚ)+10)
     
     φ = mod(2*π*(t_first_max-reference_t_first_max)/T, 2*π)
@@ -88,10 +82,7 @@ for (i, Aₛₚ) in enumerate(Aₛₚ_span)
     φ_array[i] = φ
 end
 
-
-########################################################################
-########################################################################
-
+#########################################################################################
 
 fig = Figure(resolution=DEFAULT_PLOT_RES)
 
