@@ -1,12 +1,12 @@
 #=
-Misc functions
+Misc functions: output, time
 =#
 
-#using Statistics: mean
+#########################################################################################
+
 using Dates
 
-########################################################################
-########################################################################
+#########################################################################################
 
 function debug(message, is_debug_output) 
     if is_debug_output println(message) end
@@ -20,8 +20,7 @@ function progress(message, is_debug_output)
     if is_debug_output println(message) end 
 end
 
-########################################################################
-########################################################################
+#########################################################################################
 
 function elapsed_time_string(time_ns)
     seconds = time_ns/1e9
@@ -33,4 +32,3 @@ end
 function get_easy_time()
     return Dates.format(now(), "HH:MM:SS") 
 end
-
